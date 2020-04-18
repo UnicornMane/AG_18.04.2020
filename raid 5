@@ -1,0 +1,75 @@
+#include <iostream>
+#include <vector>
+#include <set>
+#include <algorithm>
+
+#define _USE_MATH_DEFINES
+
+#include <cmath>
+#include <ctime>
+
+using namespace std;
+
+
+int main()
+{
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
+
+	for (int i = 0; i < 100; i++)
+	{
+		srand(time(0));
+		int k, n;
+		k = rand() % 1000 + 2;
+		n = rand() % 10 + 2;
+
+//т.к. 1 int = 2 байта, а 1кБ = 1024 байта, то мы должны домножить n на 512
+		n *= 512;
+		vector<vector<int>> buf(k, vector<int>(n));
+
+		for (int i = 0; i < k; i++)
+		{
+			for (auto &d : buf[i])
+			{
+				d = rand() % 1990000006;
+			}
+		}
+
+		vector<int> sum(n);
+
+		for (int i = 0; i < n; i++)
+		{
+			for (int j = 0; j < k; j++)
+			{
+				sum[i] ^= buf[j][i];
+			}
+		}
+
+		int boom = rand() % k;
+
+		vector<int> ans = buf[boom];
+
+		buf[boom] = sum;
+
+		for (int i = 0; i < n; i++)
+		{
+			for (int j = 0; j < k; j++)
+			{
+				if (j == boom) continue;
+
+				buf[boom][i] ^= buf[j][i];
+			}
+		}
+
+		cout << "result:\n";
+		if (ans == buf[boom])
+		{
+			cout << "YES\n";
+		} else
+		{
+			cout << "NO\n";
+			return 0;
+		}
+	}
+}
